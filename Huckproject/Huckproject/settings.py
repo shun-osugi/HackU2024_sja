@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'apps.mypage',
     'apps.notifications',
     'apps.transactions',
+    'apps.products'
 ]
 
 MIDDLEWARE = [

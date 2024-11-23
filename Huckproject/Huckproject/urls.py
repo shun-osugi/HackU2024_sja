@@ -28,4 +28,5 @@ urlpatterns = [
     path('mypage/', include('apps.mypage.urls')),
     path('notifications/', include('apps.notifications.urls')),
     path('transactions/', include('apps.transactions.urls')),
+    path('products/', include('apps.products.urls')),
 ]
