@@ -1,5 +1,9 @@
 from django.contrib import admin
 from .models import Notification
+from django.contrib import admin
+from .models import AdminNotification
+
+admin.site.register(AdminNotification)
 
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):

@@ -20,7 +20,7 @@ def add_comment(request, product_id):
     return JsonResponse({
         'username': comment.user.username,
         'content': comment.content,
-        'created_at': comment.created_at.strftime('%Y-%m-%d %H+9:%M:%S')
+        'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S')
     })
     
 
