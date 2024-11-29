@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6">
+      {% if product.image %}
+        <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
+      {% else %}
+        <p>画像なし</p>
+      {% endif %}
+    </div>
+    <div class="col-md-6">
+      <h1>{{ product.name|default:"データなし" }}</h1>
+      <p>更新日時: {{ product.updated_at|default:"データなし" }}</p>
+      <p>教科名: {{ product.subject|default:"データなし" }}</p>
+      
+      <h3>出品者情報</h3>
+      <p>学部学科学年: {{ product.seller.userprofile.department_year|default:"データなし" }}</p>
+      <p>評価: {% if product.seller.userprofile.rating %}
+        {% for i in "12345"|make_list %}
+          {% if forloop.counter <= product.seller.userprofile.rating %}
+            <i class="fas fa-star"></i>
+          {% else %}
+            <i class="far fa-star"></i>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        データなし
+      {% endif %}</p>
+      
+      <button id="purchase-btn" class="btn btn-success mt-3">購入する</button>
+  
+      {% if user.is_authenticated %}
+        <button id="favorite-btn" class="btn btn-outline-primary" data-product-id="{{ product.id }}">
+          {% if is_favorite %}
+            お気に入りから削除
+          {% else %}
+            お気に入りに追加
+          {% endif %}
+        </button>
+      {% endif %}
+    </div>
+  </div>
+  
+  <div class="mt-5">
+    <h3>コメント</h3>
+    <div id="comments">
+      {% for comment in comments %}
+        <div class="card mb-2">
+          <div class="card-body">
+            <h5 class="card-title">{{ comment.user.username }}</h5>
+            <p class="card-text">{{ comment.content }}</p>
+            <small class="text-muted">{{ comment.created_at }}</small>
+          </div>
+        </div>
+      {% empty %}
+        <p>コメントはありません。</p>
+      {% endfor %}
+    </div>
+    
+    {% if user.is_authenticated %}
+      <form id="comment-form" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <textarea class="form-control" name="content" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">コメントを投稿</button>
+      </form>
+    {% else %}
+      <p>コメントを投稿するにはログインしてください。</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  $(document).ready(function() {
+    $('#favorite-btn').click(function() {
+      const productId = $(this).data('product-id');
+      $.post('{% url "toggle_favorite" %}', {
+        product_id: productId,
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+      }, function(data) {
+        if (data.is_favorite) {
+          $('#favorite-btn').text('お気に入りから削除');
+        } else {
+          $('#favorite-btn').text('お気に入りに追加');
+        }
+      });
+    });
+
+    $('#purchase-btn').click(function() {
+      if (confirm('この商品を購入しますか？')) {
+          window.location.href = "{% url 'transaction_page' product.id %}";
+      }
+    });
+
+    
+
+    $('#comment-form').submit(function(e) {
+      e.preventDefault();
+      $.post('{% url "add_comment" product.id %}', $(this).serialize(), function(data) {
+        $('#comments').append(
+          '<div class="card mb-2"><div class="card-body">' +
+          '<h5 class="card-title">' + data.username + '</h5>' +
+          '<p class="card-text">' + data.content + '</p>' +
+          '<small class="text-muted">' + data.created_at + '</small>' +
+          '</div></div>'
+        );
+        $('#comment-form textarea').val('');
+      });
+    });
+  });
+</script>
+{% endblock %}

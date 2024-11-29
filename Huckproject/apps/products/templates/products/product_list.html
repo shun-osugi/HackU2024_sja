@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>商品一覧</h1>
+
+
+<form method="get" class="mb-4">
+    <div class="form-group">
+        <label for="search">商品名で検索:</label>
+        <input type="text" name="q" class="form-control" id="search" placeholder="商品名で検索" value="{{ request.GET.q }}">
+    </div>
+
+    <div class="form-group">
+        {{ form.grade.label }} {{ form.grade }}
+    </div>
+
+    <div class="form-group">
+        {{ form.faculty.label }} {{ form.faculty }}
+    </div>
+
+    <div class="form-group">
+        {{ form.department.label }}<select name="department" id="id_department" class="form-control">
+            <option value="">全学科</option>
+            <!-- 学科オプションはJavaScriptで追加 -->
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="sort">ソート:</label>
+        <select name="sort" class="form-control" id="sort">
+            <option value="name">名前順</option>
+            <option value="price_asc">価格（安い順）</option>
+            <option value="price_desc">価格（高い順）</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-outline-success">絞り込む</button>
+</form>
+
+<div class="row">
+    {% for product in products %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <img src="{{ product.image.url|default:'#' }}" class="card-img-top" alt="{{ product.name|default:'商品画像' }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name|default:"データなし" }}</h5>
+                <p class="card-text">価格: {{ product.price|default:"データなし" }}円</p>
+                <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">詳細を見る</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <p>商品がありません。</p>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+   const facultySelect = document.getElementById('id_faculty');
+   const departmentSelect = document.getElementById('id_department');
+
+   const departmentsByFaculty = {
+       '法学部': ['法学科'],
+       '経済学部': ['経済学科', '産業社会学科'],
+       '経営学部': ['経営学科', '国際経営学科'],
+       '外国語学部': ['国際英語学科'],
+       '人間学部': ['人間学科'],
+       '情報工学部': ['情報工学科'],
+       '理工学部': [
+           '数学科',
+           '情報工学科',
+           '電気電子工学科',
+           '材料機能工学科',
+           '応用化学科',
+           '機械工学科',
+           '交通機械工学科',
+           'メカトロニクス工学科',
+           '社会基盤デザイン工学科',
+           '環境創造工学科',
+           '環境創造学科',
+           '建築学科'
+       ],
+       '農学部': [
+           '生物資源学科',
+           '応用生物科学科',
+           '生物環境科学科'
+       ],
+       '薬学部': ['薬学科']
+   };
+
+   facultySelect.addEventListener('change', function() {
+       const selectedFaculty = this.value;
+       departmentSelect.innerHTML = '<option value="">全学科</option>';
+
+       if (selectedFaculty in departmentsByFaculty) {
+           departmentsByFaculty[selectedFaculty].forEach(function(dept) {
+               const option = document.createElement('option');
+               option.value = dept;
+               option.textContent = dept;
+               departmentSelect.appendChild(option);
+           });
+       }
+   });
+});
+</script>
+
+{% endblock %}

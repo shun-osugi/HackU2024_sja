@@ -1,3 +1,10 @@
 from django.contrib import admin
+from .models import Product, UserProfile, Comment, Favorite
+from .models import CustomUser
 
-# Register your models here.
+
+
+admin.site.register(Product)
+admin.site.register(UserProfile)
+admin.site.register(Comment)
+admin.site.register(Favorite)

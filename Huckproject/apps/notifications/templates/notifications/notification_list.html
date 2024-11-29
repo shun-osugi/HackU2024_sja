@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}お知らせ - メイカリ{% endblock %}
+
+{% block content %}
+<h1>お知らせ</h1>
+
+<p>通知の総数: {{ admin_notifications.count|add:user_notifications.count }}</p>
+
+<h2>運営からのお知らせ</h2>
+<div class="list-group mb-4">
+    {% for notification in admin_notifications %}
+    <div class="list-group-item">
+        <h5 class="mb-1">{{ notification.get_notification_type_display }}</h5>
+        <p class="mb-1">{{ notification.content }}</p>
+        <small>{{ notification.created_at|date:"Y/m/d H:i" }}</small>
+    </div>
+    {% empty %}
+    <p>運営からのお知らせはありません。</p>
+    {% endfor %}
+</div>
+
+<h2>あなたへのお知らせ</h2>
+<div class="list-group">
+    {% for notification in user_notifications %}
+    <div class="list-group-item {% if not notification.is_read %}list-group-item-info{% endif %}">
+        <h5 class="mb-1">{{ notification.get_notification_type_display }}</h5>
+        <p class="mb-1">{{ notification.content }}</p>
+        <small>{{ notification.created_at|date:"Y/m/d H:i" }}</small>
+    </div>
+    {% empty %}
+    <p>新しいお知らせはありません。</p>
+    {% endfor %}
+</div>
+{% endblock %}
