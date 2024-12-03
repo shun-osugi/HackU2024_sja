@@ -93,7 +93,7 @@
 
     $('#purchase-btn').click(function() {
       if (confirm('この商品を購入しますか？')) {
-          window.location.href = "{% url 'transaction_page' product.id %}";
+        window.location.href = "{% url 'transaction_chat' product.id %}";
       }
     });
 
