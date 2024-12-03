@@ -133,9 +133,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static",  # プロジェクト全体の静的ファイルディレクトリ（必要に応じて）
-]
+#STATICFILES_DIRS = [
+#    BASE_DIR / "static",  # プロジェクト全体の静的ファイルディレクトリ（必要に応じて）
+#]
 AUTH_USER_MODEL = 'products.CustomUser' 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
