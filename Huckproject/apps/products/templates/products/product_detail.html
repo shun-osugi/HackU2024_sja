@@ -55,7 +55,7 @@
           </div>
         </div>
       {% empty %}
-        <p>コメントはありません。</p>
+        <p id="no-comments">コメントはありません。</p>
       {% endfor %}
     </div>
     
@@ -102,7 +102,8 @@
     $('#comment-form').submit(function(e) {
       e.preventDefault();
       $.post('{% url "add_comment" product.id %}', $(this).serialize(), function(data) {
-        $('#comments').append(
+        $('#no-comments').remove(); // "コメントはありません。"のメッセージを削除
+        $('#comments').prepend(
           '<div class="card mb-2"><div class="card-body">' +
           '<h5 class="card-title">' + data.username + '</h5>' +
           '<p class="card-text">' + data.content + '</p>' +

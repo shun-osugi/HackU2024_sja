@@ -4,12 +4,19 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from .models import Product, Comment, Favorite
 from .forms import ProductFilterForm
-from django.db.models import F
-from django.db.models import Q  
+from django.db.models import Q
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    return render(request, 'products/product_detail.html', {'product': product})
+    comments = Comment.objects.filter(product=product).order_by('-created_at')
+    is_favorite = False
+    if request.user.is_authenticated:
+        is_favorite = Favorite.objects.filter(user=request.user, product=product).exists()
+    return render(request, 'products/product_detail.html', {
+        'product': product,
+        'comments': comments,
+        'is_favorite': is_favorite
+    })
 
 @login_required
 @require_POST
@@ -22,7 +29,6 @@ def add_comment(request, product_id):
         'content': comment.content,
         'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S')
     })
-    
 
 @login_required
 @require_POST
@@ -37,7 +43,6 @@ def toggle_favorite(request):
     return JsonResponse({'is_favorite': created})
 
 def transaction_page(request, product_id):
-    # トランザクションページの処理を実装
     return render(request, 'transaction_page.html', {'product_id': product_id})
 
 def product_list(request):
@@ -56,7 +61,6 @@ def product_list(request):
     # 検索処理
     query = request.GET.get('q')  # 検索クエリを取得
     if query:
-        # descriptionフィールドが存在するか確認し、存在しない場合は商品名だけでフィルタリング
         products = products.filter(Q(name__icontains=query))  # 商品名で検索
 
     # フィルタリング処理
@@ -73,11 +77,9 @@ def product_list(request):
             products = products.filter(department=department)
 
     context = {
-        'form': form,  # コンテキストにフォームを追加
+        'form': form,
         'products': products,
-        'query': query,  # 検索クエリをコンテキストに追加
+        'query': query,
     }
-    
-    
     
     return render(request, 'products/product_list.html', context)
