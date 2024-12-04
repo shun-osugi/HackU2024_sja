@@ -1,0 +1,101 @@
+/* スタイル全般 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+}
+
+/* コンテナ */
+.container {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 見出し */
+h1 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* フォームグループ */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* ラベル */
+.form-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* 入力フィールド */
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* 数字入力フィールド */
+.form-group input[type="number"] {
+    text-align: right;
+}
+
+/* 価格の「円」部分 */
+.form-group span {
+    margin-left: 10px;
+    font-size: 16px;
+}
+
+/* 必須項目の強調 */
+.required {
+    color: red;
+}
+
+/* ボタン */
+.form-group {
+    display: flex;
+    justify-content: center; /* 横方向で中央揃え */
+    gap: 10px; /* ボタン間にスペースを追加 */
+}
+
+/* ボタンのスタイル調整 */
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff6b6b; /* ボタンの背景色 */
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.form-group button:hover {
+    background-color: #c53030;
+}
+
+/* 画像プレビュー */
+.form-group #preview img {
+    max-width: 100px;
+    margin: 5px;
+}
+
+/* プレビューコンテナ */
+#preview {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+}

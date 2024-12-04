@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}商品を出品する - メイカリ{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">商品を出品する</h1>
+
+<form method="POST" enctype="multipart/form-data" action="{% url 'listings:listing' %}">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="product_name">商品名:</label>
+        <input type="text" id="product_name" name="product_name" class="form-control" placeholder="例: Javaの参考書" required>
+    </div>
+
+    <div class="form-group">
+        <label for="subject">教科名:</label>
+        <input type="text" id="subject" name="subject" class="form-control" placeholder="例: プログラミング基礎">
+    </div>
+
+    <div class="form-group">
+        <label for="description">説明:</label>
+        <textarea id="description" name="description" class="form-control" placeholder="商品の特徴や状態を記載してください" rows="4"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="price">価格 (円):</label>
+        <input type="number" id="price" name="price" class="form-control" min="0" placeholder="例: 1500" required>
+    </div>
+
+    <!-- 学部・学科 -->
+    <div class="form-group">
+        <label for="faculty">学部:</label>
+        <select id="faculty" name="faculty" onchange="updateDepartments()">
+            <option value="法学部">法学部</option>
+            <option value="経営学部">経営学部</option>
+            <option value="経済学部">経済学部</option>
+            <option value="外国語学部">外国語学部</option>
+            <option value="人間学部">人間学部</option>
+            <option value="都市情報学部">都市情報学部</option>
+            <option value="情報工学部">情報工学部</option>
+            <option value="理工学部">理工学部</option>
+            <option value="農学部">農学部</option>
+            <option value="薬学部">薬学部</option>
+        </select>
+    
+        <label for="department">学科:</label>
+        <select id="department" name="department">
+            <!-- 初期状態では理工学部の学科を表示 -->
+            <option value="機械工学科">機械工学科</option>
+            <option value="数学科">数学科</option>
+            <option value="電気電子工学科">電気電子工学科</option>
+            <option value="材料機能工学科">材料機能工学科</option>
+            <option value="応用化学科">応用化学科</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="image">画像アップロード:</label>
+        <input type="file" id="image" name="image" class="form-control-file" accept="image/*" multiple>
+        <div id="preview" class="mt-3"></div>
+    </div>
+
+    <div class="form-group text-center">
+        <button type="submit" name="action" value="draft" class="btn btn-secondary mr-2">下書き保存</button>
+        <button type="submit" name="action" value="publish" class="btn btn-primary">出品する</button>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // 画像プレビュー機能
+    const imageInput = document.getElementById('image');
+    const previewContainer = document.getElementById('preview');
+
+    imageInput.addEventListener('change', () => {
+        previewContainer.innerHTML = '';
+        Array.from(imageInput.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxWidth = '100px';
+                img.style.margin = '5px';
+                previewContainer.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+</script>
+{% endblock %}
