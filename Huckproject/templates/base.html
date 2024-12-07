@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}メイカリ{% endblock %}</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    {% load static %}
+    <script src="{% static 'js/base.js' %}"></script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -17,7 +19,7 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a href="#" class="nav-link btn btn-primary text-white">出品ページ</a>
+                    <a href="{% url 'listings:listing' %}" class="nav-link btn btn-primary text-white">出品ページ</a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link btn btn-secondary text-white ml-2">マイページ</a>
