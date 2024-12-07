@@ -8,7 +8,7 @@
     <title>{% block title %}メイカリ{% endblock %}</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     {% load static %}
-    <script src="{% static 'js/base.js' %}"></script>
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -22,7 +22,7 @@
                     <a href="{% url 'listings:listing' %}" class="nav-link btn btn-primary text-white">出品ページ</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link btn btn-secondary text-white ml-2">マイページ</a>
+                    <a href="{% url 'mypage:mypage' %}" class="nav-link btn btn-secondary text-white ml-2">マイページ</a>
                 </li>
                 <li class="nav-item">
                     <a href="{% url 'notifications:notification_list' %}" class="nav-link btn btn-info text-white ml-2">お知らせ</a>
@@ -35,13 +35,12 @@
     </nav>
 
     <div class="container mt-4">
-        {% block content %}
-        {% endblock %}
+        {% block content %}{% endblock %}
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-    {% block extra_js %}
-    {% endblock %}
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

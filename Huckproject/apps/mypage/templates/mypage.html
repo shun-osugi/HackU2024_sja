@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}マイページ - メイカリ{% endblock %}
+
+{% load static %}  <!-- ここを追加 -->
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'mypage/css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <h1>マイページ</h1>
+    <!-- マイページフォームなど -->
+     <h1 class="aa">
+    faaaaa
+     </h1>
+{% endblock %}
+
+
+
+{% block extra_js %}
+    <script src="{% static 'mypage/js/common.js' %}"></script>
+{% endblock %}
