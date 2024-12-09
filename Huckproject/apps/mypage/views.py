@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from listings.models import Listing
+from apps.listings.models import Listing
+
 
 
 def index(request):
