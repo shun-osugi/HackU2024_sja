@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}出品履歴 - メイカリ{% endblock %}
+
+{% block content %}
+<h1>出品履歴</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>商品名</th>
+            <th>教科名</th>
+            <th>説明</th>
+            <th>価格 (円)</th>
+            <th>学部</th>
+            <th>学科</th>
+            <th>画像</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for listing in listings %}
+        <tr>
+            <td>{{ listing.id }}</td>
+            <td>{{ listing.product_name }}</td>
+            <td>{{ listing.subject }}</td>
+            <td>{{ listing.description }}</td>
+            <td>{{ listing.price }}</td>
+            <td>{{ listing.faculty }}</td>
+            <td>{{ listing.department }}</td>
+            <td>
+                {% if listing.image %}
+                <img src="{{ listing.image.url }}" alt="{{ listing.product_name }}" style="max-width: 100px;">
+                {% else %}
+                画像なし
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="8" class="text-center">出品履歴がありません。</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
