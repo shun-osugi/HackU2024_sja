@@ -3,44 +3,44 @@
 {% block title %}出品履歴 - メイカリ{% endblock %}
 
 {% block content %}
-<h1>出品履歴</h1>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>商品名</th>
-            <th>教科名</th>
-            <th>説明</th>
-            <th>価格 (円)</th>
-            <th>学部</th>
-            <th>学科</th>
-            <th>画像</th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="container py-4">
+    <h1 class="mb-4 text-center">出品履歴</h1>
+    <div class="row g-3">
         {% for listing in listings %}
-        <tr>
-            <td>{{ listing.id }}</td>
-            <td>{{ listing.product_name }}</td>
-            <td>{{ listing.subject }}</td>
-            <td>{{ listing.description }}</td>
-            <td>{{ listing.price }}</td>
-            <td>{{ listing.faculty }}</td>
-            <td>{{ listing.department }}</td>
-            <td>
+        <div class="col-md-4 col-sm-6">
+            <div class="card h-100">
                 {% if listing.image %}
-                <img src="{{ listing.image.url }}" alt="{{ listing.product_name }}" style="max-width: 100px;">
+                <img src="{{ listing.image.url }}" class="card-img-top" alt="{{ listing.product_name }}">
                 {% else %}
-                画像なし
+                <div class="card-img-top placeholder-image">
+                    <span>画像なし</span>
+                </div>
                 {% endif %}
-            </td>
-        </tr>
+                <div class="card-body">
+                    <h5 class="card-title">{{ listing.product_name }}</h5>
+                    <p class="card-text text-muted">{{ listing.description|truncatechars:50 }}</p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">教科: {{ listing.subject }}</li>
+                        <li class="list-group-item">価格: ¥{{ listing.price }}</li>
+                        <li class="list-group-item">学部: {{ listing.faculty }}</li>
+                        <li class="list-group-item">学科: {{ listing.department }}</li>
+                    </ul>
+                </div>
+                <div class="card-footer text-end">
+                    <a href="{% url 'listings:edit_listing' listing.id %}" class="btn btn-outline-primary btn-sm">詳細を見る</a>
+                </div>            
+            </div>
+        </div>
         {% empty %}
-        <tr>
-            <td colspan="8" class="text-center">出品履歴がありません。</td>
-        </tr>
+        <div class="text-center">
+            <p>出品履歴がありません。</p>
+        </div>
         {% endfor %}
-    </tbody>
-</table>
+    </div>
+</div>
+<div class="d-flex justify-content-between align-items-center mt-4">
+    <a href="{% url 'mypage:mypage' %}" class="btn btn-primary">
+        戻る
+    </a>
+</div> 
 {% endblock %}
