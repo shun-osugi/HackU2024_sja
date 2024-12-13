@@ -47,8 +47,8 @@ def edit_listing(request, pk):
         form = ListingForm(request.POST, request.FILES, instance=listing)
         if form.is_valid():
             form.save()
-            # 保存後に確認ページなどにリダイレクト
-            return redirect('listings:listing_record')  # 出品履歴ページにリダイレクト
+            # 保存後のリダイレクト
+            return redirect('mypage:listing_record')  # 出品履歴ページにリダイレクト
     else:
         form = ListingForm(instance=listing)
 
