@@ -14,9 +14,6 @@ def member_info(request):#会員情報
 def inquiry(request):#お問い合わせ
     return render(request, 'inquiry.html')
 
-def listing_record(request):#お問い合わせ
-    return render(request, 'listing_record.html')
-
 def listing_record(request):#出品履歴
     # Listing モデルの全データを取得
     listings = Listing.objects.all()

@@ -7,6 +7,7 @@ app_name = 'listings'
 
 urlpatterns = [
     path('create/', views.create_listing, name='listing'),
+    path('edit/<uuid:pk>/', views.edit_listing, name='edit_listing'),
 ]
 
 if settings.DEBUG:
