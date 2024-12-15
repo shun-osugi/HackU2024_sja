@@ -26,7 +26,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('', home_views.index, name='home'),  # ルートURLに対応するビューを追加
+    path('', include('social_django.urls', namespace='social')),
     path('accounts/', include('apps.accounts.urls')),
     path('home/', include('apps.home.urls')),
     path('listings/', include('apps.listings.urls')),
