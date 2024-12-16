@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.hashers import make_password
 from django.conf import settings  
 
 class CustomUser(AbstractUser):
@@ -23,12 +24,32 @@ class Product(models.Model):
         return self.name
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # カスタムユーザーを使用
-    department_year = models.CharField(max_length=100, null=True, blank=True)
-    rating = models.IntegerField(default=0)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    # accountsアプリから統合するフィールド
+    account_name = models.CharField(max_length=100, default="Default Name")
+    email = models.EmailField(unique=True, default="default@ccmailg.meijo-u.ac.jp")
+    department = models.CharField(max_length=100)  # 学部・学科
+    password = models.CharField(max_length=128, null=True, blank=True)  # ハッシュ化されたパスワードを保存するフィールド
+
+    def save(self, *args, **kwargs):
+        """
+        モデル保存時にパスワードをハッシュ化します。
+        """
+        if not self.password.startswith('pbkdf2_'):  # 既にハッシュ化されている場合はスキップ
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
+
+    # productsアプリの既存のフィールド
+    # （既存のフィールドがあればそのまま残す）
 
     def __str__(self):
-        return self.user.username
+        return self.account_name
+
+    class Meta:
+        app_label = 'products'
 
 class Comment(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')

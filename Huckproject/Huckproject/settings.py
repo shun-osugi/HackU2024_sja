@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'social_django',  # Social Auth用
     'apps.accounts',
     'apps.home',
     'apps.listings',
@@ -70,6 +71,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -134,7 +137,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / "static",  # プロジェクト全体の静的ファイルディレクトリ（必要に応じて）
+    os.path.join(BASE_DIR, 'static'),
 ]
 AUTH_USER_MODEL = 'products.CustomUser' 
 
@@ -144,3 +147,40 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'your_email@example.com'
 EMAIL_HOST_PASSWORD = 'your_email_password'
+
+# Google OAuth2の設定
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '967268568153-u26ndg6fo080hkrstdo5chtgvdj8u3ha.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'GOCSPX-EfvQOKMTpBitXonvQQYFYHtLxk7 '
+
+# 認証バックエンドの設定
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+# CSRF対策
+MIDDLEWARE = [
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',  # 必須
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',  # 必須
+    'django.contrib.messages.middleware.MessageMiddleware',  # 必須
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+
+# セッション設定
+SESSION_COOKIE_SECURE = True  # HTTPS環境の場合
+CSRF_COOKIE_SECURE = True    # HTTPS環境の場合
+
+# セキュリティヘッダー
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# ログイン・ログアウト設定
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_URL = 'logout'
+LOGOUT_REDIRECT_URL = 'login'

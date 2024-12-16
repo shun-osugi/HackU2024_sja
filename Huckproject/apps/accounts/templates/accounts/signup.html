@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新規登録</title>
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>新規登録</h1>
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="username">ユーザーネーム</label>
+                <input type="text" id="username" name="username" required>
+                {% if form.username.errors %}
+                    <p class="error-message">{{ form.username.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="email">メールアドレス（@ccmailg.meijo-u.ac.jp）</label>
+                <input type="email" id="email" name="email" required>
+                {% if form.email.errors %}
+                    <p class="error-message">{{ form.email.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="password">パスワード</label>
+                <input type="password" id="password" name="password" required>
+                {% if form.password.errors %}
+                    <p class="error-message">{{ form.password.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="password_confirm">パスワード（確認）</label>
+                <input type="password" id="password_confirm" name="password_confirm" required>
+            </div>
+
+            <div class="form-group">
+                <label for="department">学部・学科</label>
+                <select id="department" name="department" required>
+                    <option value="">選択してください</option>
+                    <option value="理工学部">理工学部</option>
+                    <option value="情報工学部">情報工学部</option>
+                    <option value="経営学部">経営学部</option>
+                    <option value="経済学部">経済学部</option>
+                    <option value="法学部">法学部</option>
+                    <!-- 必要に応じて他の学部を追加 -->
+                </select>
+                {% if form.department.errors %}
+                    <p class="error-message">{{ form.department.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="error-message">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+
+            <button type="submit" class="submit-button">登録する</button>
+        </form>
+
+        <div class="login-link">
+            <p>すでにアカウントをお持ちの方は<a href="{% url 'accounts:login' %}">ログイン</a></p>
+        </div>
+    </div>
+</body>
+</html>

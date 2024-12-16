@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>ログイン</h2>
+<form method="post">
+    {% csrf_token %}
+    <div>
+        <label>アカウント名：</label>
+        {{ form.account_name }}
+    </div>
+    <div>
+        <label>メールアドレス：</label>
+        {{ form.email }}
+    </div>
+    <div>
+        <label>学部・学科：</label>
+        {{ form.department }}
+    </div>
+    <button type="submit">登録</button>
+</form>
+{% endblock %}
