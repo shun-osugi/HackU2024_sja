@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}出品情報を編集する - メイカリ{% endblock %}
+
+{% block content %}
+<h1>出品情報を編集する</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}  <!-- フォームをパラグラフ形式で表示 -->
+    
+    <div class="d-flex justify-content-between mt-4">        
+        <a href="{% url 'mypage:listing_record' %}" class="btn btn-outline-secondary">キャンセル</a>
+        <button type="submit" class="btn btn-primary">更新する</button>
+    </div>
+</form>
+
+{% endblock %}

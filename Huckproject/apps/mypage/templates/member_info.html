@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}会員情報{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="{% static 'mypage/css/member.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-4">会員情報</h1>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <!-- 名前と学部学科 -->
+            <div class="row mb-4">
+                <div class="col-md-4 text-center">
+                    <i class="bi bi-person-circle fs-1 text-secondary"></i>
+                </div>
+                <div class="col-md-8">
+                    <h4>名前: <span class="fw-bold">山田 太郎</span></h4>
+                    <p>学部学科: 情報工学部 情報工学科</p>
+                </div>
+            </div>
+
+            <!-- 可能日時 -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <h5>可能日時</h5>
+                    <p>平日: 10:00 - 18:00<br>土日祝: 10:00 - 14:00</p>
+                </div>
+            </div>
+
+            <!-- レビュー情報 -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <h5>レビュー情報</h5>
+                    <div class="border p-3 rounded mb-2">
+                        <p><strong>評価:</strong> ★★★★☆</p>
+                        <p><strong>コメント:</strong> とても親切で対応が早かったです。</p>
+                    </div>
+                    <div class="border p-3 rounded mb-2">
+                        <p><strong>評価:</strong> ★★★★★</p>
+                        <p><strong>コメント:</strong> 丁寧な説明で助かりました！</p>
+                    </div>
+                    <a href="#" class="btn btn-primary">すべてのレビューを表示</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-flex justify-content-between align-items-center mt-4">
+    <a href="{% url 'mypage:mypage' %}" class="btn btn-primary">
+        戻る
+    </a>
+</div> 
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
