@@ -24,10 +24,7 @@ class Product(models.Model):
         return self.name
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
-    )
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     # accountsアプリから統合するフィールド
     account_name = models.CharField(max_length=100, default="Default Name")
     email = models.EmailField(unique=True, default="default@ccmailg.meijo-u.ac.jp") #メールアドレス
@@ -41,7 +38,7 @@ class UserProfile(models.Model):
         """
         モデル保存時にパスワードをハッシュ化します。
         """
-        if not self.password.startswith('pbkdf2_'):  # 既にハッシュ化されている場合はスキップ
+        if self.password and not self.password.startswith('pbkdf2_'):  # 既にハッシュ化されている場合はスキップ
             self.password = make_password(self.password)
         super().save(*args, **kwargs)
 

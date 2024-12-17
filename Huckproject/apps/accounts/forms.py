@@ -2,9 +2,19 @@ from django import forms
 from apps.products.models import UserProfile
 
 class UserProfileForm(forms.ModelForm):
+    password_confirm = forms.CharField(widget=forms.PasswordInput(), label="パスワード（確認）")
+
     class Meta:
         model = UserProfile
-        fields = ['account_name', 'email', 'department']
+        fields = ['account_name', 'email', 'department', 'password']
+        widgets = {
+            'password': forms.PasswordInput(),
+        }
+        error_messages = {
+            'email': {
+                'unique': 'このメールアドレスは既に登録されています',
+            },
+        }
 
     def clean_email(self):
         email = self.cleaned_data['email']

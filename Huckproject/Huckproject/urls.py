@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import RedirectView
 import os
 
 from apps.home import views as home_views
@@ -26,7 +27,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('', include('social_django.urls', namespace='social')),
+    path('', RedirectView.as_view(url='/accounts/login/', permanent=False), name='root'),  # ルートURLを/accounts/login/にリダイレクト
     path('accounts/', include('apps.accounts.urls')),
     path('home/', include('apps.home.urls')),
     path('listings/', include('apps.listings.urls')),
