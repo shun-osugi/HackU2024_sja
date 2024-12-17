@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from django.conf import settings  
 
 class CustomUser(AbstractUser):
@@ -30,9 +30,12 @@ class UserProfile(models.Model):
     )
     # accountsアプリから統合するフィールド
     account_name = models.CharField(max_length=100, default="Default Name")
-    email = models.EmailField(unique=True, default="default@ccmailg.meijo-u.ac.jp")
+    email = models.EmailField(unique=True, default="default@ccmailg.meijo-u.ac.jp") #メールアドレス
     department = models.CharField(max_length=100)  # 学部・学科
-    password = models.CharField(max_length=128, null=True, blank=True)  # ハッシュ化されたパスワードを保存するフィールド
+    password = models.CharField(max_length=128, null=True, blank=True) #ハッシュ化されたパスワードを保存するフィールド
+
+    def check_password(self, raw_password):
+        return check_password(raw_password, self.password)
 
     def save(self, *args, **kwargs):
         """

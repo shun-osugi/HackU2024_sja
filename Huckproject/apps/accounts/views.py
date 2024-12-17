@@ -7,6 +7,7 @@ from .forms import UserProfileForm
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth import authenticate, login
 
 def index(request):
     return render(request, 'accounts/accoount.html')
@@ -17,42 +18,26 @@ def google_login(request):
         return render(request, 'accounts/login.html')
         
     elif request.method == 'POST':
+        # メールアドレスとパスワードを使用してログイン
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        
+        if not email or not password:
+            messages.error(request, 'メールアドレスとパスワードを入力してください')
+            return render(request, 'accounts/login.html')
+
+        # ユーザーの認証
         try:
-            # トークンをリクエストから取得
-            token = request.POST.get('id_token')
-            if not token:
-                return JsonResponse({'error': 'トークンが見つかりません'}, status=400)
-
-            # Googleからのトークン検証
-            idinfo = id_token.verify_oauth2_token(
-                token, 
-                requests.Request(),
-                '967268568153-u26ndg6fo080hkrstdo5chtgvdj8u3ha.apps.googleusercontent.com'
-            )
-            
-            # メールアドレスの検証
-            email = idinfo['email']
-            if not email.endswith('@ccmailg.meijo-u.ac.jp'):
-                return JsonResponse({'error': '許可されていないメールドメインです'})
-                
-            # メールアドレスの形式チェック（9桁の数字）
-            account_number = email.split('@')[0]
-            if not (account_number.isdigit() and len(account_number) == 9):
-                return JsonResponse({'error': '無効なアカウント番号です'})
-            # ユーザーが存在するか確認し、存在しない場合は作成
-            user_profile, created = UserProfile.objects.get_or_create(
-                email=email,
-                defaults={
-                    'account_name': account_number,  # 必要に応じて名前を設定
-                }
-            )
-            # ログイン成功時の処理
-            return JsonResponse({'success': True, 'created': created})
-
-        except ValueError as e:
-            return JsonResponse({'error': '無効なトークンです'}, status=400)
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+            user_profile = UserProfile.objects.get(email=email)
+            if user_profile.check_password(password):
+                # ログイン成功時の処理
+                return redirect('home')
+            else:
+                messages.error(request, 'パスワードが間違っています')
+                return render(request, 'accounts/login.html')
+        except UserProfile.DoesNotExist:
+            messages.error(request, 'ユーザーが見つかりません')
+            return render(request, 'accounts/login.html')
 
     # その他のHTTPメソッドの場合
     return JsonResponse({'error': '不正なリクエストメソッドです'}, status=405)
@@ -91,3 +76,17 @@ def signup(request):
 @login_required
 def profile(request):
     return render(request, 'accounts/profile.html')
+
+def login_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = authenticate(request, username=email, password=password)
+        if user is not None:
+            # ログイン成功
+            login(request, user)
+            return redirect('home')
+        else:
+            # エラーメッセージを追加
+            messages.error(request, 'メールアドレスまたはパスワードが間違っています。')
+    return render(request, 'accounts/login.html')
