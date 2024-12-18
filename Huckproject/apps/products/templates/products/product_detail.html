@@ -4,35 +4,41 @@
 <div class="container mt-5">
   <div class="row">
     <div class="col-md-6">
-      {% if product.image %}
-        <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
+      {% if listing.image %}
+        <img src="{{ listing.image.url }}" class="img-fluid" alt="{{ listing.product_name }}">
       {% else %}
         <p>画像なし</p>
       {% endif %}
     </div>
     <div class="col-md-6">
-      <h1>{{ product.name|default:"データなし" }}</h1>
-      <p>更新日時: {{ product.updated_at|default:"データなし" }}</p>
-      <p>教科名: {{ product.subject|default:"データなし" }}</p>
+      <h1>{{ listing.product_name|default:"データなし" }}</h1>
+      <p>更新日時: {{ listing.updated_at|default:"データなし" }}</p>
+      <p>教科名: {{ listing.subject|default:"データなし" }}</p>
       
       <h3>出品者情報</h3>
-      <p>学部学科学年: {{ product.seller.userprofile.department_year|default:"データなし" }}</p>
-      <p>評価: {% if product.seller.userprofile.rating %}
-        {% for i in "12345"|make_list %}
-          {% if forloop.counter <= product.seller.userprofile.rating %}
-            <i class="fas fa-star"></i>
+      {% if listing.seller.userprofile %}
+        <p>学部学科学年: {{ listing.seller.userprofile.department_year|default:"データなし" }}</p>
+        <p>評価:
+          {% if listing.seller.userprofile.rating %}
+            {% for i in "12345"|make_list %}
+              {% if forloop.counter = listing.seller.userprofile.rating %}
+                <i class="fas fa-star"></i>
+              {% else %}
+                <i class="far fa-star"></i>
+              {% endif %}
+            {% endfor %}
           {% else %}
-            <i class="far fa-star"></i>
+            データなし
           {% endif %}
-        {% endfor %}
+        </p>
       {% else %}
-        データなし
-      {% endif %}</p>
+        <p>出品者情報はありません。</p>
+      {% endif %}
       
       <button id="purchase-btn" class="btn btn-success mt-3">購入する</button>
   
       {% if user.is_authenticated %}
-        <button id="favorite-btn" class="btn btn-outline-primary" data-product-id="{{ product.id }}">
+        <button id="favorite-btn" class="btn btn-outline-primary" data-listing-id="{{ listing.id }}">
           {% if is_favorite %}
             お気に入りから削除
           {% else %}
@@ -77,10 +83,11 @@
 {% block extra_js %}
 <script>
   $(document).ready(function() {
+    // お気に入りボタンの動作
     $('#favorite-btn').click(function() {
-      const productId = $(this).data('product-id');
+      const listingId = $(this).data('listing-id');
       $.post('{% url "toggle_favorite" %}', {
-        product_id: productId,
+        id: listingId,
         csrfmiddlewaretoken: '{{ csrf_token }}'
       }, function(data) {
         if (data.is_favorite) {
@@ -91,17 +98,17 @@
       });
     });
 
+    // 購入ボタンの動作
     $('#purchase-btn').click(function() {
       if (confirm('この商品を購入しますか？')) {
-        window.location.href = "{% url 'transaction_chat' product.id %}";
+        window.location.href = "{% url 'transaction_chat' listing.id %}";
       }
     });
 
-    
-
+    // コメントフォームの動作
     $('#comment-form').submit(function(e) {
       e.preventDefault();
-      $.post('{% url "add_comment" product.id %}', $(this).serialize(), function(data) {
+      $.post('{% url "add_comment" listing.id %}', $(this).serialize(), function(data) {
         $('#no-comments').remove(); // "コメントはありません。"のメッセージを削除
         $('#comments').prepend(
           '<div class="card mb-2"><div class="card-body">' +

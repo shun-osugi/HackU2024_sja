@@ -38,12 +38,12 @@
 </form>
 
 <div class="row">
-    {% for product in products %}
+    {% for listing in listings %}
     <div class="col-md-4 mb-4">
         <div class="card">
-            <img src="{{ product.image.url|default:'#' }}" class="card-img-top" alt="{{ product.name|default:'商品画像' }}">
+            <img src="{{ listing.image.url|default:'#' }}" class="card-img-top" alt="{{ listing.id|default:'商品画像' }}">
             <div class="card-body">
-                <h5 class="card-title">{{ product.name|default:"データなし" }}</h5>
+                <h5 class="card-title">{{ listing.id|default:"データなし" }}</h5>
                 <p class="card-text">価格: {{ product.price|default:"データなし" }}円</p>
                 <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">詳細を見る</a>
             </div>

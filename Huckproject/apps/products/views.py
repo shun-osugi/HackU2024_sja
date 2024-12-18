@@ -2,26 +2,27 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from .models import Product, Comment, Favorite
+from apps.listings.models import Listing
+from .models import Comment, Favorite
 from .forms import ProductFilterForm
 from django.db.models import Q
 
-def product_detail(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    comments = Comment.objects.filter(product=product).order_by('-created_at')
+def product_detail(request, id):
+    listing = get_object_or_404(Listing, id=id)
+    comments = Comment.objects.filter(product=listing).order_by('-created_at')
     is_favorite = False
     if request.user.is_authenticated:
-        is_favorite = Favorite.objects.filter(user=request.user, product=product).exists()
+        is_favorite = Favorite.objects.filter(user=request.user, product=listing).exists()
     return render(request, 'products/product_detail.html', {
-        'product': product,
+        'listing': listing,
         'comments': comments,
         'is_favorite': is_favorite
     })
 
 @login_required
 @require_POST
-def add_comment(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
+def add_comment(request, id):
+    product = get_object_or_404(Listing, id=id)
     content = request.POST.get('content')
     comment = Comment.objects.create(product=product, user=request.user, content=content)
     return JsonResponse({
@@ -33,8 +34,8 @@ def add_comment(request, product_id):
 @login_required
 @require_POST
 def toggle_favorite(request):
-    product_id = request.POST.get('product_id')
-    product = get_object_or_404(Product, id=product_id)
+    id = request.POST.get('id')
+    product = get_object_or_404(Listing, id=id)
     favorite, created = Favorite.objects.get_or_create(user=request.user, product=product)
     
     if not created:
@@ -47,21 +48,21 @@ def transaction_page(request, product_id):
 
 def product_list(request):
     form = ProductFilterForm(request.GET)  # フォームのインスタンス化
-    products = Product.objects.all()
+    products = Listing.objects.all()
 
     # ソート処理
-    sort_by = request.GET.get('sort', 'name')  # デフォルトは名前でソート
+    sort_by = request.GET.get('sort', 'product_name')  # デフォルトは商品名でソート
     if sort_by == 'price_asc':
         products = products.order_by('price')
     elif sort_by == 'price_desc':
         products = products.order_by('-price')
-    elif sort_by == 'name':
-        products = products.order_by('name')
+    elif sort_by == 'product_name':  # 修正: name -> product_name
+        products = products.order_by('product_name')
 
     # 検索処理
     query = request.GET.get('q')  # 検索クエリを取得
     if query:
-        products = products.filter(Q(name__icontains=query))  # 商品名で検索
+        products = products.filter(Q(product_name__icontains=query))  # 修正: name -> product_name
 
     # フィルタリング処理
     if form.is_valid():  # フォームが有効かどうかをチェック
