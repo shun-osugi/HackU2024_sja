@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}お問い合わせ - メイカリ{% endblock %}
+
+{% block content %}
+<h1>お問い合わせフォーム</h1>
+<form id="contactForm">
+    お名前を教えてください<br>
+    <input type="text" name="entry.267571814" required><br><br>
+
+    満足度はいかがでしょうか？<br>
+    <input type="radio" name="entry.207264841" value="満足" required>満足です！<br>
+    <input type="radio" name="entry.207264841" value="普通">普通でした。<br>
+    <input type="radio" name="entry.207264841" value="不満">不満です。。。<br><br>
+
+    お問い合わせ内容をご記入ください<br>
+    <textarea name="entry.415872066" rows="3" cols="50" required></textarea><br><br>
+
+    <button type="submit">送信</button>
+</form>
+
+<script>
+    document.getElementById('contactForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // デフォルトのフォーム送信を防ぐ
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        // Googleフォームの送信先URL
+        const googleFormURL = "https://docs.google.com/forms/u/2/d/e/1FAIpQLSc7LuzRN9e6nqEyWXWKAUCTKlXonZTosv7znWNBB51HgZeMVQ/formResponse";
+
+        // fetchを使って非同期でGoogleフォームへデータ送信
+        fetch(googleFormURL, {
+            method: "POST",
+            mode: "no-cors", // クロスオリジンリクエストを許可
+            body: formData
+        }).then(() => {
+            // 送信成功後の遷移先
+            window.location.href = "{% url 'mypage:thanks' %}";
+        }).catch((error) => {
+            console.error("送信エラー:", error);
+            alert("送信に失敗しました。もう一度お試しください。");
+        });
+    });
+</script>    
+
+<div class="d-flex justify-content-between align-items-center mt-4">
+    <a href="{% url 'mypage:mypage' %}" class="btn btn-primary">戻る</a>
+</div> 
+{% endblock %}
