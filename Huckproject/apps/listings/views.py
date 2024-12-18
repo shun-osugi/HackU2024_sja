@@ -4,29 +4,43 @@ from django.http import HttpResponse
 from .models import Listing
 from .forms import ListingForm
 from django.views.decorators.http import require_POST
+from apps.products.models import Product  # Productモデルをインポート
+from django.contrib.auth.decorators import login_required
 
+
+@login_required
 def create_listing(request):
     if request.method == 'POST':
         # フォームからのデータを取得
-        product_name = request.POST.get('product_name')
+        name = request.POST.get('product_name')
         subject = request.POST.get('subject')
-        description = request.POST.get('description')
+        # description = request.POST.get('description')
         price = request.POST.get('price')
         faculty = request.POST.get('faculty')
         department = request.POST.get('department')
         image = request.FILES.get('image')  # ファイルはFILESから取得
+        seller = request.user
+        grade = request.POST.get('grade')  # gradeの値を取得
 
+# 取得した grade を整数に変換
+        try:
+            grade = int(grade)
+        except ValueError:
+            grade = 1  # デフォルト値として 1年に設定する
+            
         # データ保存
-        listing = Listing(
-            product_name=product_name,
+        product = Product(
+            name=name,
             subject=subject,
-            description=description,
+            # description=description,
             price=price,
             faculty=faculty,
             department=department,
-            image=image
+            image=image,
+            grade=grade,  # gradeを設定
+            seller = seller
         )
-        listing.save()
+        product.save()
 
         # どのボタンが押されたかを判定
         action = request.POST.get('action')
