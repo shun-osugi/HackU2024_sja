@@ -9,4 +9,5 @@ urlpatterns = [
     path('member_info/', views.member_info, name='member_info'),#会員情報
     path('inquiry/', views.inquiry, name='inquiry'),#お問い合わせ
     path('listing_record/', views.listing_record, name='listing_record'),#出品履歴
+    path('transaction/', views.transaction, name='transaction'),#取引中
 ]
