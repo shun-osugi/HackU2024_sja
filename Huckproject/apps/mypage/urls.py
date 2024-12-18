@@ -11,4 +11,5 @@ urlpatterns = [
     path('listing_record/', views.listing_record, name='listing_record'),#出品履歴
     path('transaction/', views.transaction, name='transaction'), #取引中
 
+
 ]

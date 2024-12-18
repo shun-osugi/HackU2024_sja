@@ -22,3 +22,4 @@ def listing_record(request):#出品履歴
 
 def transaction(request):
     return render(request, 'transaction.html')
+
