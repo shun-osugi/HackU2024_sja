@@ -11,7 +11,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model
 import logging
 
-# logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 def index(request):
     return render(request, 'accounts/accoount.html')
