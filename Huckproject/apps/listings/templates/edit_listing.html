@@ -3,16 +3,15 @@
 {% block title %}出品情報を編集する - メイカリ{% endblock %}
 
 {% block content %}
-<h1>出品情報を編集する</h1>
-
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}  <!-- フォームをパラグラフ形式で表示 -->
-    
-    <div class="d-flex justify-content-between mt-4">        
-        <a href="{% url 'mypage:listing_record' %}" class="btn btn-outline-secondary">キャンセル</a>
-        <button type="submit" class="btn btn-primary">更新する</button>
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="w-100" style="max-width: 500px;">
+        <h1 class="text-center mb-4">出品情報を編集する</h1>
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- フォームをパラグラフ形式で表示 -->
+            <div class="d-flex justify-content-between mt-4">        
+                <a href="{% url 'mypage:listing_record' %}" class="btn btn-outline-secondary">キャンセル</a>
+                <button type="submit" class="btn btn-primary">更新する</button>
+            </div>
     </div>
-</form>
-
+</div>
 {% endblock %}

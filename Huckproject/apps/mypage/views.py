@@ -19,3 +19,6 @@ def listing_record(request):#出品履歴
     listings = Listing.objects.all()
     # テンプレートにデータを渡す
     return render(request, 'listing_record.html', {'listings': listings})
+
+def transaction(request):
+    return render(request, 'transaction.html')

@@ -30,7 +30,7 @@
                 <div class="card-body">
                     <i class="bi bi-receipt fs-1 text-success"></i>
                     <h5 class="card-title mt-3">購入履歴</h5>
-                    <a href="#" class="btn btn-primary">確認する</a>
+                    <a href="{% url 'mypage:buy_record' %}" class="btn btn-primary">確認する</a>
                 </div>
             </div>
         </div>
@@ -40,7 +40,7 @@
                 <div class="card-body">
                     <i class="bi bi-arrow-left-right fs-1 text-warning"></i>
                     <h5 class="card-title mt-3">取引中</h5>
-                    <a href="#" class="btn btn-primary">確認する</a>
+                    <a href="{% url 'mypage:transaction' %}" class="btn btn-primary">確認する</a>
                 </div>
             </div>
         </div>
