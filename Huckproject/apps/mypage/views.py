@@ -14,6 +14,10 @@ def member_info(request):#会員情報
 def inquiry(request):#お問い合わせ
     return render(request, 'inquiry.html')
 
+
+def transaction(request):
+    return render(request, 'transaction.html')
+
 def inquiry_thanks(request):#お問い合わせありがとう
     return render(request, 'thanks.html')
 
