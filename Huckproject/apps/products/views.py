@@ -80,6 +80,7 @@ def product_list(request):
         grade = form.cleaned_data['grade']
         faculty = form.cleaned_data['faculty']
         department = form.cleaned_data['department']
+        show_favorites = form.cleaned_data.get('show_favorites')
 
         if grade and int(grade) != 0:
             products = products.filter(grade=grade)
@@ -87,6 +88,11 @@ def product_list(request):
             products = products.filter(faculty=faculty)
         if department:
             products = products.filter(department=department)
+        
+        # お気に入りのフィルタリング
+        if show_favorites and request.user.is_authenticated:
+            favorite_products = Favorite.objects.filter(user=request.user).values_list('product_id', flat=True)
+            products = products.filter(id__in=favorite_products)
 
     context = {
         'form': form,

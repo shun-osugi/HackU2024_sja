@@ -17,5 +17,8 @@ class ProductFilterForm(forms.Form):
     ]
 
     grade = forms.ChoiceField(choices=GRADE_CHOICES, required=False)
-    faculty = forms.ChoiceField(choices=FACULTY_CHOICES, required=False)
-    department = forms.CharField(required=False)
+    faculty = forms.CharField(max_length=100, required=False)
+    department = forms.CharField(max_length=100, required=False)
+    
+    # お気に入りフィルター用のフィールドを追加
+    show_favorites = forms.BooleanField(required=False, label='お気に入りのみ表示')

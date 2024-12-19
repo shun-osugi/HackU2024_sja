@@ -78,18 +78,23 @@
 <script>
   $(document).ready(function() {
     $('#favorite-btn').click(function() {
+      console.log("Favorite button clicked");  // デバッグ用
       const productId = $(this).data('product-id');
       $.post('{% url "toggle_favorite" %}', {
         product_id: productId,
         csrfmiddlewaretoken: '{{ csrf_token }}'
       }, function(data) {
+        console.log("Response received:", data);  // デバッグ用
         if (data.is_favorite) {
           $('#favorite-btn').text('お気に入りから削除');
         } else {
           $('#favorite-btn').text('お気に入りに追加');
         }
+      }).fail(function(jqXHR, textStatus, errorThrown) {
+        console.error("AJAX request failed:", textStatus, errorThrown);  // エラーハンドリング
       });
     });
+    
 
     $('#purchase-btn').click(function() {
       if (confirm('この商品を購入しますか？')) {

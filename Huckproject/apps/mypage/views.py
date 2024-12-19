@@ -7,7 +7,7 @@ def index(request):
     return render(request, 'mypage.html')
 
 def favorite(request):
-    favorites = Favorite.objects.filter(user=request.user).order_by('-created_at')
+    favorites = Favorite.objects.filter(user=request.user).select_related('product').order_by('-created_at')
     return render(request, 'favorite.html', {'favorites': favorites})
 
 @login_required
