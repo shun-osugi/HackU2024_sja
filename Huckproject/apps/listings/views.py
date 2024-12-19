@@ -14,7 +14,7 @@ def create_listing(request):
         # フォームからのデータを取得
         name = request.POST.get('product_name')
         subject = request.POST.get('subject')
-        # description = request.POST.get('description')
+        description = request.POST.get('description')
         price = request.POST.get('price')
         faculty = request.POST.get('faculty')
         department = request.POST.get('department')
@@ -32,7 +32,7 @@ def create_listing(request):
         product = Product(
             name=name,
             subject=subject,
-            # description=description,
+            description=description,
             price=price,
             faculty=faculty,
             department=department,
