@@ -19,7 +19,9 @@ class Product(models.Model):
     department = models.CharField(max_length=100, default='未設定')
     updated_at = models.DateTimeField(auto_now=True)
     subject = models.CharField(max_length=100)
+    description = models.TextField(max_length=2048, verbose_name="説明", default='説明なし')  # 商品説明を追加
     seller = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='products')  # カスタムユーザーを使用
+    buyer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='purchased_products')  # 購入者を追加
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
     def __str__(self):
