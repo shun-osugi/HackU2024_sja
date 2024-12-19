@@ -35,12 +35,24 @@ def add_comment(request, product_id):
 def toggle_favorite(request):
     product_id = request.POST.get('product_id')
     product = get_object_or_404(Product, id=product_id)
+
+    # お気に入りを作成または削除
     favorite, created = Favorite.objects.get_or_create(user=request.user, product=product)
     
     if not created:
         favorite.delete()
     
     return JsonResponse({'is_favorite': created})
+
+@login_required
+def favorite_list(request):
+    # 現在ログインしているユーザーのお気に入り商品を取得
+    favorites = Favorite.objects.filter(user=request.user)
+    
+    # お気に入り商品をリスト化
+    products = [favorite.product for favorite in favorites]
+
+    return render(request, 'favorite.html', {'products': products})
 
 def transaction_page(request, product_id):
     return render(request, 'transaction_page.html', {'product_id': product_id})

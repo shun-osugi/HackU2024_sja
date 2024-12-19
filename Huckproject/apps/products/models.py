@@ -16,6 +16,7 @@ class Product(models.Model):
     faculty = models.CharField(max_length=100)  # 学部
     department = models.CharField(max_length=100, default='未設定')
     updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)  # 作成日時を追加
     subject = models.CharField(max_length=100)
     description = models.TextField(max_length=2048, verbose_name="説明", default='説明なし')  # 商品説明を追加
     seller = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='products')  # カスタムユーザーを使用
@@ -65,6 +66,7 @@ class Comment(models.Model):
 class Favorite(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # カスタムユーザーを使用
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ('user', 'product')

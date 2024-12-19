@@ -2,6 +2,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Transaction, Message
 from .forms import MessageForm, MeetingTimeForm
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 
 @login_required
@@ -41,3 +42,16 @@ def transaction_chat(request, pk):
         'form': form,
         'time_form': time_form
     })
+
+@login_required
+def transaction_list(request):
+    # ログインユーザーが「売り手」または「買い手」で、ステータスが「pending」の取引を取得
+    transactions = Transaction.objects.filter(
+        Q(seller=request.user) | Q(buyer=request.user),
+        status='pending'
+    )
+
+    # 商品リストを作成
+    products = [transaction.product for transaction in transactions]
+
+    return render(request, 'transactions/transaction_list.html', {'products': products})
