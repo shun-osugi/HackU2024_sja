@@ -62,6 +62,7 @@ def signup(request):
 
             # メールアドレスのドメイン確認
             email = form.cleaned_data['email']
+            account_name = form.cleaned_data['account_name']  # account_nameを取得
             if not email.endswith('@ccmailg.meijo-u.ac.jp'):
                 messages.error(request, '名城大学のメールアドレスを使用してください')
                 return render(request, 'accounts/signup.html', {'form': form})
@@ -78,35 +79,23 @@ def signup(request):
                 messages.error(request, 'このメールアドレスは既に登録されています')
                 return render(request, 'accounts/signup.html', {'form': form})
 
-            # ユーザーを保存
-            user = User.objects.create_user(
-                username=username,
-                email=email,
-                password=password
-            )
+            # Userオブジェクトの作成
+            user = User.objects.create_user(username=account_name, email=email, password=password)
 
-            logger.debug(f"User created: {user}")
-
-            # ユーザープロファイルを作成し、user_idを設定
-            user_profile = UserProfile(
-                user=user,
-                account_name=username,
-                email=email,
-                department=form.cleaned_data['department'],
-                faculty=form.cleaned_data['faculty'],
-                grade=form.cleaned_data['grade'],
-                password=password,
-                availability=availability
-            )
+            user_profile = form.save(commit=False)
+            user_profile.user = user  # UserProfileにUserを関連付ける
+            user_profile.password = make_password(password)
 
             # 空き時間をJSON形式で保存
-            availability = json.loads(request.POST.get('availability', '[]'))
+            availability_json = request.POST.get('availability', '[]')
+            try:
+                availability = json.loads(availability_json)
+            except json.JSONDecodeError:
+                availability = []  # デコードエラーの場合は空のリストを設定
+
             user_profile.availability = availability
 
             user_profile.save()
-
-            logger.debug(f"UserProfile created: {user_profile}")
-
             messages.success(request, '登録が完了しました')
             return redirect('accounts:login')
     else:
