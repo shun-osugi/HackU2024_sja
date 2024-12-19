@@ -3,10 +3,11 @@ from apps.products.models import UserProfile
 
 class UserProfileForm(forms.ModelForm):
     password_confirm = forms.CharField(widget=forms.PasswordInput(), label="パスワード（確認）")
+    availability = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     class Meta:
         model = UserProfile
-        fields = ['account_name', 'email', 'department', 'password']
+        fields = ['account_name', 'email', 'department', 'faculty', 'grade', 'password', 'availability']
         widgets = {
             'password': forms.PasswordInput(),
         }

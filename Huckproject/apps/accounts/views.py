@@ -10,6 +10,8 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model
 import logging
+from django.views.decorators.http import require_GET
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +19,7 @@ def index(request):
     return render(request, 'accounts/accoount.html')
 
 def google_login(request):
+    print("google_login")
     if request.method == 'GET':
         # GETリクエストの場合はログインページを表示
         return render(request, 'accounts/login.html')
@@ -89,9 +92,17 @@ def signup(request):
                 user=user,
                 account_name=username,
                 email=email,
-                department=form.cleaned_data.get('department'),
-                password=password
+                department=form.cleaned_data['department'],
+                faculty=form.cleaned_data['faculty'],
+                grade=form.cleaned_data['grade'],
+                password=password,
+                availability=availability
             )
+
+            # 空き時間をJSON形式で保存
+            availability = json.loads(request.POST.get('availability', '[]'))
+            user_profile.availability = availability
+
             user_profile.save()
 
             logger.debug(f"UserProfile created: {user_profile}")
@@ -104,18 +115,65 @@ def signup(request):
 
 @login_required
 def profile(request):
-    return render(request, 'accounts/profile.html')
+    user = request.user  # ログイン中のユーザーを取得
+    try:
+        user_profile = UserProfile.objects.get(user=user)  # ユーザープロファイルを取得
+    except UserProfile.DoesNotExist:
+        user_profile = None  # プロファイルが存在しない場合の処理
 
-def login_view(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        user = authenticate(request, username=email, password=password)
-        if user is not None:
-            # ログイン成功
-            login(request, user)
-            return redirect('home')
-        else:
-            # エラーメッセージを追加
-            messages.error(request, 'メールアドレスまたはパスワードが間違っています。')
-    return render(request, 'accounts/login.html')
+    return render(request, 'accounts/account.html', {'user_profile': user_profile})
+
+
+# def login_view(request):
+#     if request.method == 'POST':
+#         email = request.POST.get('email')
+#         password = request.POST.get('password')
+#         user = authenticate(request, username=email, password=password)
+#         if user is not None:
+#             login(request, user)  # ログイン成功
+#             return redirect('home')
+#         else:
+#             # エラーメッセージを追加
+#             messages.error(request, 'メールアドレスまたはパスワードが間違っています。')
+#     return render(request, 'accounts/login.html')
+
+@require_GET
+def get_user_profile(request):
+    print("User authenticated:", request.user.is_authenticated)  # デバッグ出力
+    if request.user.is_authenticated:
+        try:
+            user_profile = UserProfile.objects.get(user=request.user)
+            print("User profile found:", user_profile.account_name)  # デバッグ出力
+            response_data = {
+                'isAuthenticated': True,
+                'accountName': user_profile.account_name,
+                'department': user_profile.department,
+                'faculty': user_profile.faculty,
+                'grade': user_profile.grade,
+                'availability': user_profile.availability
+            }
+            print("Response data:", response_data)  # デバッグ出力
+            return JsonResponse(response_data)
+        except UserProfile.DoesNotExist as e:
+            # エラーログを追加
+            print(f"Profile not found for user {request.user.id}: {e}")
+            response = JsonResponse({
+                'isAuthenticated': True,
+                'accountName': None,
+                'department': None,
+                'faculty': None,
+                'grade': None,
+                'availability': None
+            })
+    else:
+        response = JsonResponse({
+            'isAuthenticated': False,
+            'accountName': None,
+            'department': None,
+            'faculty': None,
+            'grade': None,
+            'availability': None
+        })
+
+    response['Cache-Control'] = 'no-store, must-revalidate'
+    return response

@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.hashers import make_password, check_password
 from django.conf import settings  
+from django.contrib.auth import get_user_model
+
 
 class CustomUser(AbstractUser):
     favorite_products = models.ManyToManyField('Product', related_name='favorited_by', blank=True)
@@ -28,8 +30,12 @@ class UserProfile(models.Model):
     # accountsアプリから統合するフィールド
     account_name = models.CharField(max_length=100, default="Default Name")
     email = models.EmailField(unique=True, default="default@ccmailg.meijo-u.ac.jp") #メールアドレス
-    department = models.CharField(max_length=100)  # 学部・学科
-    password = models.CharField(max_length=128, null=True, blank=True) #ハッシュ化されたパスワードを保存するフィールド
+    faculty = models.CharField(max_length=255, default='未設定')  # 学部
+    department = models.CharField(max_length=100)  # 学科
+    password = models.CharField(max_length=128, null=True, blank=True)# パスワード
+    grade = models.CharField(max_length=50, default='未設定')     # 学年
+    product_name = models.CharField(max_length=100, default='未設定')  # 商品名
+    availability = models.JSONField(default=list)  # 空き時間を保存するフィールド
 
     def check_password(self, raw_password):
         return check_password(raw_password, self.password)
@@ -69,4 +75,3 @@ class Favorite(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s favorite: {self.product.name}"
-    

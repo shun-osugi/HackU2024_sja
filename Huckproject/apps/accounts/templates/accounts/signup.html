@@ -22,10 +22,166 @@
         
         <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+            {{ form.non_field_errors }}
+            <div>
+                <label for="id_account_name">ユーザー名:</label>
+                {{ form.account_name.errors }}
+                {{ form.account_name }}
+            </div>
+            <div>
+                <label for="id_email">メールアドレス:</label>
+                {{ form.email.errors }}
+                {{ form.email }}
+            </div>
+            <div>
+                <label for="id_faculty">学部:</label>
+                <select name="faculty" id="id_faculty">
+                    <option value="">学部を選択してください</option>
+                    <option value="法学部">法学部</option>
+                    <option value="経済学部">経済学部</option>
+                    <option value="経営学部">経営学部</option>
+                    <option value="外国語学部">外国語学部</option>
+                    <option value="人間学部">人間学部</option>
+                    <option value="情報工学部">情報工学部</option>
+                    <option value="理工学部">理工学部</option>
+                    <option value="農学部">農学部</option>
+                    <option value="薬学部">薬学部</option>
+                </select>
+            </div>
+            <div>
+                <label for="id_department">学科:</label>
+                <select name="department" id="id_department">
+                    <option value="">学科を選択してください</option>
+                </select>
+            </div>
+            <div>
+                <label for="id_grade">学年:</label>
+                <select name="grade" id="id_grade">
+                    <option value="1年">1年</option>
+                    <option value="2年">2年</option>
+                    <option value="3年">3年</option>
+                    <option value="4年">4年</option>
+                </select>
+            </div>
+            <div>
+                <label for="id_password">パスワード:</label>
+                {{ form.password.errors }}
+                {{ form.password }}
+            </div>
+            <div>
+                <label for="id_password_confirm">パスワード（確認）:</label>
+                {{ form.password_confirm.errors }}
+                {{ form.password_confirm }}
+            </div>
+
+            <!-- 空き時間選択 -->
+            <div id="availability-selector">
+                <h3>空き時間を選択してください</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>時限</th>
+                            <th>月</th>
+                            <th>火</th>
+                            <th>水</th>
+                            <th>木</th>
+                            <th>金</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for period in "123456" %}
+                        <tr>
+                            <td>{{ period }}限</td>
+                            {% for day in "月火水木金" %}
+                            <td>
+                                <input type="checkbox" data-day="{{ day }}" data-period="{{ period }}">
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <input type="hidden" name="availability" id="availability">
+
             <button type="submit">登録する</button>
         </form>
         <p>すでにアカウントをお持ちの方は<a href="{% url 'accounts:login' %}">ログイン</a></p>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const availabilityInput = document.getElementById('availability');
+        const checkboxes = document.querySelectorAll('#availability-selector input[type="checkbox"]');
+
+        const departmentsByFaculty = {
+            '法学部': ['法学科'],
+            '経済学部': ['経済学科', '産業社会学科'],
+            '経営学部': ['経営学科', '国際経営学科'],
+            '外国語学部': ['国際英語学科'],
+            '人間学部': ['人間学科'],
+            '情報工学部': ['情報工学科'],
+            '理工学部': [
+                '数学科',
+                '情報工学科',
+                '電気電子工学科',
+                '材料機能工学科',
+                '応用化学科',
+                '機械工学科',
+                '交通機械工学科',
+                'メカトロニクス工学科',
+                '社会基盤デザイン工学科',
+                '環境創造工学科',
+                '環境創造学科',
+                '建築学科'
+            ],
+            '農学部': [
+                '生物資源学科',
+                '応用生物科学科',
+                '生物環境科学科'
+            ],
+            '薬学部': ['薬学科']
+        };
+
+        const facultySelect = document.getElementById('id_faculty');
+        const departmentSelect = document.getElementById('id_department');
+
+        facultySelect.addEventListener('change', function() {
+            const selectedFaculty = this.value;
+            departmentSelect.innerHTML = '<option value="">学科を選択してください</option>';
+
+            if (selectedFaculty in departmentsByFaculty) {
+                departmentsByFaculty[selectedFaculty].forEach(function(dept) {
+                    const option = document.createElement('option');
+                    option.value = dept;
+                    option.textContent = dept;
+                    departmentSelect.appendChild(option);
+                });
+            }
+        });
+
+        function updateAvailability() {
+            const periods = ["1", "2", "3", "4", "5", "6"];
+            const days = ["月", "火", "水", "木", "金"];
+            const availability = periods.map(period => {
+                return days.map(day => {
+                    const checkbox = document.querySelector(`input[data-day="${day}"][data-period="${period}"]`);
+                    return checkbox.checked ? 1 : 0;
+                });
+            });
+            availabilityInput.value = JSON.stringify(availability);
+        }
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateAvailability);
+        });
+
+        // フォーム送信時にavailabilityを更新
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function() {
+            updateAvailability();
+        });
+    });
+    </script>
 </body>
 </html>
