@@ -21,11 +21,49 @@
                 </div>
                 <div class="col-md-8">
                     <h4>名前: <span class="fw-bold">{{ user_profile.account_name }}</span></h4>
-                    <p>学部・学科: {{ user_profile.department }}</p>
+                    <p>学部: {{ user_profile.faculty }}<br>学科: {{ user_profile.department }}</p>
                 </div>
             </div>
 
-            <!-- メールアドレス -->
+            <!-- 空き時間 -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <h5>空き時間</h5>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>曜日</th>
+                                <th>月曜日</th>
+                                <th>火曜日</th>
+                                <th>水曜日</th>
+                                <th>木曜日</th>
+                                <th>金曜日</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                {% for day_availability in availability %}
+                <tr>
+                    <td>{{ forloop.counter }} 限</td>  <!-- 曜日の番号 (1~6) -->
+                    {% for period in day_availability %}
+                    <td>
+                        {% if period == 1 %}
+                            ○
+                        {% elif period == 0 %}
+                            ×
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+                    </table>
+                </div>
+            </div>
+            
+
+            <!-- その他の情報 -->
             <div class="row mb-4">
                 <div class="col-md-12">
                     <h5>メールアドレス</h5>
@@ -35,11 +73,11 @@
         </div>
     </div>
 </div>
-<div class="d-flex justify-content-between align-items-center mt-4">
-    <a href="{% url 'mypage:mypage' %}" class="btn btn-primary">
+<div class="d-flex justify-content-between align-items-center" style="margin-top: -10px;">
+    <a href="{% url 'mypage:mypage' %}" class="btn btn-primary ms-3" style="margin-bottom: 45px;">
         戻る
     </a>
-</div> 
+</div>
 {% endblock %}
 
 {% block extra_js %}
