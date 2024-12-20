@@ -31,7 +31,7 @@ def transaction_chat(request, pk):
             transaction.status = 'cancelled'
             transaction.save()
             return redirect('transaction_chat', pk=transaction.pk)
-        elif 'approve_transaction' in request.POST and request.user == transaction.buyer:
+        elif 'approve_transaction' in request.POST and request.user == transaction.seller:
             transaction.status = 'completed'
             transaction.save()
             return redirect('transaction_chat', pk=transaction.pk)

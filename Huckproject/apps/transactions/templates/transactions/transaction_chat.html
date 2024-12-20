@@ -27,7 +27,6 @@
             {% csrf_token %}
             <button type="submit" name="cancel_transaction" class="btn btn-danger">取引をキャンセル</button>
         </form>
-    {% elif request.user == transaction.buyer and transaction.meeting_time %}
         <form method="post" class="mt-3">
             {% csrf_token %}
             <button type="submit" name="approve_transaction" class="btn btn-success">取引を完了</button>
