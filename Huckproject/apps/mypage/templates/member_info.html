@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load static %}
+{% load custom_filters %}
 
 {% block title %}会員情報{% endblock %}
 
@@ -41,23 +42,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                {% for day_availability in availability %}
-                <tr>
-                    <td>{{ forloop.counter }} 限</td>  <!-- 曜日の番号 (1~6) -->
-                    {% for period in day_availability %}
-                    <td>
-                        {% if period == 1 %}
-                            ○
-                        {% elif period == 0 %}
-                            ×
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </tbody>
+                            {% for period_index in "123456" %}
+                            <tr>
+                                <!-- 時限の表示 -->
+                                <td>{{ forloop.counter }}限</td>
+
+                                <!-- 各曜日ごとの該当時限のデータを取得 -->
+                                {% for day_availability in availability %}
+                                    <td>
+                                        {% if day_availability|index:forloop.parentloop.counter0 == 1 %}
+                                            ○
+                                        {% elif day_availability|index:forloop.parentloop.counter0 == 0 %}
+                                            ×
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
                     </table>
                 </div>
             </div>
