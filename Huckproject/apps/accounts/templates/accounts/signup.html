@@ -22,7 +22,18 @@
         
         <form method="post">
             {% csrf_token %}
-            {{ form.non_field_errors }}
+            {% if form.errors %}
+                <ul class="form-errors">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>{{ field.label }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
             <div>
                 <label for="id_account_name">ユーザー名:</label>
                 {{ form.account_name.errors }}
@@ -57,10 +68,10 @@
             <div>
                 <label for="id_grade">学年:</label>
                 <select name="grade" id="id_grade">
-                    <option value="1年">1年</option>
-                    <option value="2年">2年</option>
-                    <option value="3年">3年</option>
-                    <option value="4年">4年</option>
+                    <option value="1">1年</option>
+                    <option value="2">2年</option>
+                    <option value="3">3年</option>
+                    <option value="4">4年</option>
                 </select>
             </div>
             <div>

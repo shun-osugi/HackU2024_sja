@@ -7,7 +7,7 @@ class UserProfileForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ['account_name', 'email', 'department', 'faculty', 'grade', 'password', 'availability']
+        fields = ['account_name', 'email', 'faculty', 'department', 'grade', 'password', 'availability']
         widgets = {
             'password': forms.PasswordInput(),
         }

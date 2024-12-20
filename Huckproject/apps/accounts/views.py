@@ -98,6 +98,8 @@ def signup(request):
             user_profile.save()
             messages.success(request, '登録が完了しました')
             return redirect('accounts:login')
+        else:
+            print(form.errors)  # フォームのエラーを出力
     else:
         form = UserProfileForm()
     return render(request, 'accounts/signup.html', {'form': form})
