@@ -31,11 +31,12 @@ class UserProfile(models.Model):
     # accountsアプリから統合するフィールド
     account_name = models.CharField(max_length=100, default="Default Name")
     email = models.EmailField(unique=True, default="default@ccmailg.meijo-u.ac.jp") #メールアドレス
-    department = models.CharField(max_length=100)  # 学部・学科
+    department = models.CharField(max_length=100)  # 学科
     password = models.CharField(max_length=128, null=True, blank=True) 
-    grade = models.IntegerField(null=True, blank=True)
-    faculty = models.CharField(max_length=100, null=True, blank=True)
+    grade = models.IntegerField()  # 整数型として定義
+    faculty = models.CharField(max_length=100, null=True, blank=True)# 学部
     created_at = models.DateTimeField(default=timezone.now)
+    availability = models.JSONField(default=list)  # 暇な時間
 
     def check_password(self, raw_password):
         return check_password(raw_password, self.password)
