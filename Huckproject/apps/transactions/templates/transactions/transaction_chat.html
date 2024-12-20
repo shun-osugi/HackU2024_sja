@@ -32,5 +32,19 @@
             <button type="submit" name="approve_transaction" class="btn btn-success">取引を完了</button>
         </form>
     {% endif %}
+    {% if request.user == transaction.buyer %}
+        {% if transaction.meeting_time %}
+            <!-- 売り手が送信した日時を表示 -->
+            <div class="mt-3">
+                <h5>売り手が送信した日時:</h5>
+                <p>{{ transaction.meeting_time }}</p>
+            </div>
+        {% else %}
+            <!-- 日程が設定されていない場合のメッセージ -->
+            <div class="mt-3">
+                <h5>日程を決めてください。</h5>
+            </div>
+        {% endif %}
+    {% endif %}
 </div>
 {% endblock %}

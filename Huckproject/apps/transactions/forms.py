@@ -11,3 +11,6 @@ class MeetingTimeForm(forms.ModelForm):
     class Meta:
         model = Transaction
         fields = ['meeting_time']
+        widgets = {
+            'meeting_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
