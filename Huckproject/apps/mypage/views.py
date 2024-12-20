@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from apps.products.models import Product, Favorite, UserProfile
 
@@ -17,7 +17,11 @@ def buy_record(request):#購入履歴
     return render(request, 'buy_record.html', {'purchases': purchases})
 
 def member_info(request):#会員情報
-    return render(request, 'member_info.html')
+    user_profile = get_object_or_404(UserProfile, user=request.user)  # 現在のユーザーのプロファイルを取得
+    context = {
+        'availability': user_profile.availability,  # availabilityをテンプレートに渡す
+    }
+    return render(request, 'mypage/member_info.html', context)
 
 def inquiry(request):#お問い合わせ
     return render(request, 'inquiry.html')
@@ -32,11 +36,12 @@ def inquiry_thanks(request):#お問い合わせありがとう
 @login_required
 def member_info(request):
     # ログインしているユーザーのUserProfileを取得
-    user_profile = UserProfile.objects.get(user=request.user)
-
-    return render(request, 'member_info.html', {
-        'user_profile': user_profile,
-    })
+    user_profile = get_object_or_404(UserProfile, user=request.user)
+    print("空き時間デバッグ:", user_profile.availability)  # データ構造を確認
+    context = {
+        'availability': user_profile.availability,
+    }
+    return render(request, 'member_info.html', context)
 
 @login_required
 def listing_record(request):#出品履歴
