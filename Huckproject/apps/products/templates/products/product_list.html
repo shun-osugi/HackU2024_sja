@@ -3,7 +3,6 @@
 {% block content %}
 <h1>商品一覧</h1>
 
-
 <form method="get" class="mb-4">
     <div class="form-group">
         <label for="search">商品名で検索:</label>
@@ -34,9 +33,15 @@
         </select>
     </div>
 
+    <!-- お気に入りフィルターを追加 -->
+    <div class="form-group form-check">
+        {{ form.show_favorites }} {{ form.show_favorites.label_tag }}
+    </div>
+
     <button type="submit" class="btn btn-outline-success">絞り込む</button>
 </form>
 
+<!-- 以下の商品表示部分は変更なし -->
 <div class="row">
     {% for product in products %}
     <div class="col-md-4 mb-4">

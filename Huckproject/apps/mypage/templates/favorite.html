@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}お気に入り - メイカリ{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4 text-center">お気に入りの商品</h1>
+    <div class="row g-3">
+        {% for favorite in favorites %}
+        <div class="col-md-4 col-sm-6">
+            <div class="card h-100">
+                {% if favorite.product.image %}
+                <img src="{{ favorite.product.image.url }}" class="card-img-top" alt="{{ favorite.product.name }}">
+                {% else %}
+                <div class="card-img-top placeholder-image">
+                    <span>画像なし</span>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ favorite.product.name }}</h5>
+                    <p class="card-text text-muted">{{ favorite.product.description|truncatechars:50 }}</p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">学年: {{ favorite.product.grade }}年</li>
+                        <li class="list-group-item">教科: {{ favorite.product.subject }}</li>
+                        <li class="list-group-item">学部: {{ favorite.product.faculty }}</li>
+                        <li class="list-group-item">価格: ¥{{ favorite.product.price }}</li>
+                    </ul>
+                </div>
+                <div class="card-footer text-end">
+                    <a href="{% url 'product_detail' favorite.product.id %}" class="btn btn-outline-primary btn-sm">詳細を見る</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center">
+            <p>お気に入りの商品がありません。</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="d-flex justify-content-between align-items-center mt-4">
+    <a href="{% url 'mypage:mypage' %}" class="btn btn-primary">
+        戻る
+    </a>
+</div>
+{% endblock %}

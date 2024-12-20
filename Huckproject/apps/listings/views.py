@@ -52,9 +52,9 @@ def create_listing(request):
     # GETリクエストの場合、フォームページを表示
     return render(request, 'listings/listing.html')
 
-def edit_listing(request, pk):
+def edit_listing(request, product_id):
     # UUID 型の pk を使って出品情報を取得
-    listing = get_object_or_404(Listing, pk=pk)
+    listing = get_object_or_404(Product, id=product_id)
 
     # フォームを使って出品情報を更新する場合
     if request.method == 'POST':
