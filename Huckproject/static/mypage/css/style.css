@@ -1,1 +1,7 @@
+/* コンテナに左右の余白を追加 */
+.custom-container {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
 .aa {color:red;}
