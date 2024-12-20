@@ -41,6 +41,12 @@
     <button type="submit" class="btn btn-outline-success">絞り込む</button>
 </form>
 
+<!-- 量子アニーリング結果 -->
+{% if matching_result %}
+    <p>最も相性の良いユーザー: {{ matching_result }}</p>
+{% endif %}
+<!-- 量子アニーリング結果 -->
+
 <!-- 以下の商品表示部分は変更なし -->
 <div class="row">
     {% for product in products %}

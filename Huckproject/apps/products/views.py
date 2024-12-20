@@ -2,9 +2,16 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from .models import Product, Comment, Favorite
+from .models import Product, Comment, Favorite,UserProfile
 from .forms import ProductFilterForm
 from django.db.models import Q
+from openjij import SQASampler
+import numpy as np
+import logging  # ログ出力用
+
+# ロガーの設定
+logger = logging.getLogger(__name__)
+
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -94,10 +101,70 @@ def product_list(request):
             favorite_products = Favorite.objects.filter(user=request.user).values_list('product_id', flat=True)
             products = products.filter(id__in=favorite_products)
 
+    # ============================================
+    # 量子アニーリングによる空き時間マッチング処理
+    # ============================================
+    matching_result = None  # 結果を格納する変数
+    
+    if request.user.is_authenticated:
+        current_user = UserProfile.objects.get(user=request.user)
+        current_availability = current_user.availability
+
+        # 他のユーザーの空き時間を取得
+        other_users = UserProfile.objects.exclude(user=request.user)
+        other_availabilities = [(user.account_name, user.availability) for user in other_users]
+
+        def calculate_energy(schedule1, schedule2):
+            """2人のスケジュールの一致度に基づいたエネルギーを計算"""
+            energy = 0
+            for i in range(5):  # 月〜金
+                for j in range(6):  # 1限〜6限
+                    if schedule1[i][j] == 1 and schedule2[i][j] == 1:  # 両者の空き時間が一致
+                        energy -= 1  # 一致する空き時間が多いほどエネルギーが小さくなる
+                        
+                        # 予定があるコマに挟まれた空き時間の比重を重くする
+                        if j > 0 and schedule1[i][j-1] == 0 and schedule1[i][j+1] == 0:
+                            energy -= 2  # 空き時間が予定のある時間に挟まれている場合、重みを加える（例：3倍）
+
+                        # 連続した空き時間に対して価値を0.7倍する
+                        if j < 5 and schedule1[i][j] == 1 and schedule1[i][j+1] == 1:
+                            energy *= 0.7  # 連続した空き時間の価値を0.7倍にする
+            return energy
+
+        # QUBO行列の作成
+        n_users = len(other_availabilities)
+        qubo_matrix = np.zeros((n_users, n_users))
+
+        for idx, (_, avail) in enumerate(other_availabilities):
+            qubo_matrix[idx, idx] = calculate_energy(current_availability, avail)
+
+        # エネルギーを計算してログに出力
+        energies = []  # 全員のエネルギーを格納するリスト
+        for idx, (name, avail) in enumerate(other_availabilities):
+            energy = calculate_energy(current_availability, avail)
+            qubo_matrix[idx, idx] = energy
+            energies.append((name, energy))
+            logger.info(f"User: {name}, Energy: {energy}")  # エネルギーのログ出力
+
+        # OpenJijを使って最適な解を求める
+        sampler = SQASampler()
+        response = sampler.sample_qubo(qubo_matrix)
+        best_match_index = np.argmin(response.energies)  # 最小エネルギーのインデックス
+
+        # 最適な相手を取得
+        matching_result = other_availabilities[best_match_index][0]  # 名前を取得
+
+        # 全員のエネルギーをコンソールに表示（デバッグ用）
+        print("=== User Energies ===")
+        for name, energy in energies:
+            print(f"{name}: {energy}")
+        print("=====================")
+
     context = {
         'form': form,
         'products': products,
         'query': query,
+        'matching_result': matching_result,  # マッチング結果をテンプレートに渡す
     }
     
     return render(request, 'products/product_list.html', context)
