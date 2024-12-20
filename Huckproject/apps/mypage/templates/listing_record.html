@@ -9,8 +9,8 @@
         {% for listing in listings %}
         <div class="col-md-4 col-sm-6">
             <div class="card h-100">
-                {% if product.image %}
-                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ listing.product_name }}">
+                {% if listing.image %}
+                <img src="{{ listing.image.url }}" class="card-img-top" alt="{{ listing.product_name }}">
                 {% else %}
                 <div class="card-img-top placeholder-image">
                     <span>画像なし</span>

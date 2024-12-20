@@ -16,8 +16,8 @@
         <div class="col-md-4 col-sm-6">
             <div class="card h-100 shadow-sm">
                 <!-- 商品画像 -->
-                {% if product.image %}
-                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ purchase.name }}">
+                {% if purchase.image %}
+                <img src="{{ purchase.image.url }}" class="card-img-top" alt="{{ purchase.name }}">
                 {% else %}
                 <div class="card-img-top placeholder-image d-flex justify-content-center align-items-center" style="height: 200px; background-color: #f8f9fa;">
                     <span class="text-muted">画像なし</span>
