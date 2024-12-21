@@ -151,8 +151,17 @@ def product_list(request):
         response = sampler.sample_qubo(qubo_matrix)
         best_match_index = np.argmin(response.energies)  # 最小エネルギーのインデックス
 
+        # QUBO行列からエネルギーを抽出
+        diagonal_energies = [qubo_matrix[i, i] for i in range(len(qubo_matrix))]
+
+        # 最小エネルギーのインデックスを取得
+        best_match_index = diagonal_energies.index(min(diagonal_energies))
+
         # 最適な相手を取得
-        matching_result = other_availabilities[best_match_index][0]  # 名前を取得
+        matching_result = other_availabilities[best_match_index][0]
+
+        # 結果を出力
+        print(f"Best Match: {matching_result}")
 
         # 全員のエネルギーをコンソールに表示（デバッグ用）
         print("=== User Energies ===")
