@@ -17,9 +17,10 @@
                 </div>
                 {% endif %}
                 <div class="card-body">
-                    <h5 class="card-title">{{ listing.product_name }}</h5>
+                    <h5 class="card-title">{{ listing.name }}</h5>
                     <p class="card-text text-muted">{{ listing.description|truncatechars:50 }}</p>
                     <ul class="list-group list-group-flush">
+                        <li class="list-group-item">商品名: {{ listing.name }}</li>
                         <li class="list-group-item">教科: {{ listing.subject }}</li>
                         <li class="list-group-item">価格: ¥{{ listing.price }}</li>
                         <li class="list-group-item">学部: {{ listing.faculty }}</li>
