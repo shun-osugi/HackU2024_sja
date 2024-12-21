@@ -15,9 +15,12 @@ logger = logging.getLogger(__name__)
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+    seller_profile = product.seller.userprofile
+    availability = seller_profile.availability
 
     context = {
         'product': product,
+        'availability': availability,
     }
     return render(request, 'products/product_detail.html', context)
 

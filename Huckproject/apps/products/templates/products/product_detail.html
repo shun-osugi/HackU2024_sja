@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 
+{% load static %}
+{% load custom_filters %}
+
 {% block content %}
 <div class="container py-5">
   <h1 class="text-center mb-4">{{ product.name }}</h1>
@@ -10,6 +13,44 @@
       <div class="col-md-6">
           <h4>出品者情報</h4>
           <p>学部: {{ product.faculty }}<br>学科: {{ product.department }}<br>学年: {{ product.grade }}</p>
+          <div class="row mb-4">
+            <div class="col-md-12">
+                <h5>空き時間</h5>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>曜日</th>
+                            <th>月曜日</th>
+                            <th>火曜日</th>
+                            <th>水曜日</th>
+                            <th>木曜日</th>
+                            <th>金曜日</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for period in "123456"|make_list %}
+                        <tr>
+                            <td>{{ period }}限</td>
+                            {% for day in availability %}
+                                <td>
+                                    {% with status=day|index:forloop.parentloop.counter0 %}
+                                        {% if status == 1 %}
+                                            ○
+                                        {% elif status == 0 %}
+                                            ×
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    {% endwith %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+          </div>
+        
           <p>価格: {{ product.price|floatformat:0 }}円</p>
           <a href="#" class="btn btn-success">購入する</a>
           <a href="#" class="btn btn-outline-primary">お気に入りに追加</a>
