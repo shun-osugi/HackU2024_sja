@@ -10,15 +10,16 @@
     </div>
 
     <div class="form-group">
-        {{ form.grade.label }} {{ form.grade }}
+        <label for="id_grade">学年</label> {{ form.grade }}
     </div>
 
     <div class="form-group">
-        {{ form.faculty.label }} {{ form.faculty }}
+        <label for="id_faculty">学部</label> {{ form.faculty }}
     </div>
 
     <div class="form-group">
-        {{ form.department.label }}<select name="department" id="id_department" class="form-control">
+        <label for="id_department">学科</label>
+        <select name="department" id="id_department" class="form-control">
             <option value="">全学科</option>
             <!-- 学科オプションはJavaScriptで追加 -->
         </select>
@@ -43,7 +44,14 @@
 
 <!-- 量子アニーリング結果 -->
 {% if matching_result %}
-    <p>最も相性の良いユーザー: {{ matching_result }}</p>
+    <div class="card mb-4" style="border-color: #28a745; border-width: 2px;">
+        <div class="card-body">
+            <h5 class="card-title">最も相性の良いユーザー</h5>
+            <p class="card-text" style="font-weight: bold; font-size: 1.2em; color: #007bff;">
+                {{ matching_result }}
+            </p>
+        </div>
+    </div>
 {% endif %}
 <!-- 量子アニーリング結果 -->
 
