@@ -15,15 +15,11 @@ logger = logging.getLogger(__name__)
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    comments = Comment.objects.filter(product=product).order_by('-created_at')
-    is_favorite = False
-    if request.user.is_authenticated:
-        is_favorite = Favorite.objects.filter(user=request.user, product=product).exists()
-    return render(request, 'products/product_detail.html', {
+
+    context = {
         'product': product,
-        'comments': comments,
-        'is_favorite': is_favorite
-    })
+    }
+    return render(request, 'products/product_detail.html', context)
 
 @login_required
 @require_POST
@@ -151,8 +147,17 @@ def product_list(request):
         response = sampler.sample_qubo(qubo_matrix)
         best_match_index = np.argmin(response.energies)  # 最小エネルギーのインデックス
 
+        # QUBO行列からエネルギーを抽出
+        diagonal_energies = [qubo_matrix[i, i] for i in range(len(qubo_matrix))]
+
+        # 最小エネルギーのインデックスを取得
+        best_match_index = diagonal_energies.index(min(diagonal_energies))
+
         # 最適な相手を取得
-        matching_result = other_availabilities[best_match_index][0]  # 名前を取得
+        matching_result = other_availabilities[best_match_index][0]
+
+        # 結果を出力
+        print(f"Best Match: {matching_result}")
 
         # 全員のエネルギーをコンソールに表示（デバッグ用）
         print("=== User Energies ===")
