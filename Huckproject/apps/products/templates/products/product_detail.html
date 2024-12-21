@@ -1,47 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container py-5">
+  <h1 class="text-center mb-4">{{ product.name }}</h1>
   <div class="row">
-    <div class="col-md-6">
-      {% if product.image %}
-        <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
-      {% else %}
-        <p>画像なし</p>
-      {% endif %}
-    </div>
-    <div class="col-md-6">
-      <h1>{{ product.name|default:"データなし" }}</h1>
-      <p>更新日時: {{ product.updated_at|default:"データなし" }}</p>
-      <p>教科名: {{ product.subject|default:"データなし" }}</p>
-      
-      <h3>出品者情報</h3>
-      <p>学部学科学年: {{ product.seller.userprofile.department_year|default:"データなし" }}</p>
-      <p>評価: {% if product.seller.userprofile.rating %}
-        {% for i in "12345"|make_list %}
-          {% if forloop.counter <= product.seller.userprofile.rating %}
-            <i class="fas fa-star"></i>
-          {% else %}
-            <i class="far fa-star"></i>
-          {% endif %}
-        {% endfor %}
-      {% else %}
-        データなし
-      {% endif %}</p>
-      
-      <button id="purchase-btn" class="btn btn-success mt-3">購入する</button>
-  
-      {% if user.is_authenticated %}
-        <button id="favorite-btn" class="btn btn-outline-primary" data-product-id="{{ product.id }}">
-          {% if is_favorite %}
-            お気に入りから削除
-          {% else %}
-            お気に入りに追加
-          {% endif %}
-        </button>
-      {% endif %}
-    </div>
+      <div class="col-md-6">
+          <img src="{{ product.image.url|default:'#' }}" class="img-fluid" alt="{{ product.name }}">
+      </div>
+      <div class="col-md-6">
+          <h4>出品者情報</h4>
+          <p>学部: {{ product.faculty }}<br>学科: {{ product.department }}<br>学年: {{ product.grade }}</p>
+          <p>価格: {{ product.price|floatformat:0 }}円</p>
+          <a href="#" class="btn btn-success">購入する</a>
+          <a href="#" class="btn btn-outline-primary">お気に入りに追加</a>
+      </div>
   </div>
+</div>
   
   <div class="mt-5">
     <h3>コメント</h3>
