@@ -1,7 +1,11 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from apps.products.models import Product, Favorite, UserProfile
-
+import logging  # ログ出力用
+from django.db.models import Q
+from apps.transactions.models import Transaction, Message
+from .forms import MessageForm, MeetingTimeForm
+from django.contrib.auth import get_user_model
 
 def index(request):
     return render(request, 'mypage.html')
@@ -26,9 +30,51 @@ def member_info(request):#会員情報
 def inquiry(request):#お問い合わせ
     return render(request, 'inquiry.html')
 
+logger = logging.getLogger(__name__)
 
+@login_required
+def transaction_list(request, user_id):
+    # 対象ユーザーを取得
+    User = get_user_model()
+    target_user = get_object_or_404(User, id=user_id)
+
+    # 対象ユーザーが関与しているステータスが「pending」の取引を取得
+    transactions = Transaction.objects.filter(
+        Q(seller=target_user) | Q(buyer=target_user),
+        status='pending'
+    )
+
+    return render(request, 'mypage/transaction_list.html', {'transactions': transactions, 'target_user': target_user})
+
+@login_required
 def transaction(request):
-    return render(request, 'transaction.html')
+    # ログインしているユーザーが関与している取引を取得
+    transactions = Transaction.objects.filter(
+        Q(seller=request.user) | Q(buyer=request.user)
+    )
+    return render(request, 'mypage/transaction.html', {'transactions': transactions})
+
+@login_required
+def transaction_chat(request, pk):
+    # 取引を取得
+    transaction = get_object_or_404(Transaction, pk=pk)
+
+    # メッセージフォームを処理
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.transaction = transaction
+            message.sender = request.user
+            message.save()
+            return redirect('transaction_chat', pk=pk)
+    else:
+        form = MessageForm()
+
+    # 取引のメッセージを取得
+    messages = transaction.messages.all()
+
+    return render(request, 'mypage/transaction_chat.html', {'transaction': transaction, 'form': form, 'messages': messages})
 
 def inquiry_thanks(request):#お問い合わせありがとう
     return render(request, 'thanks.html')

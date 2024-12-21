@@ -16,6 +16,9 @@ class Transaction(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f'Transaction {self.id} - {self.product.name}'
+
 class Message(models.Model):
     transaction = models.ForeignKey(Transaction, related_name='messages', on_delete=models.CASCADE)
     sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

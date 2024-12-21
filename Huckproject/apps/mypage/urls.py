@@ -13,4 +13,6 @@ urlpatterns = [
     path('transaction/', views.transaction, name='transaction'),#取引中
     path('favorites/', views.favorite, name='favorite'),
     path('member_info/', views.member_info, name='member_info'),
+    path('transactions/<int:user_id>/', views.transaction_list, name='transaction_list'),  # 修正
+    path('transactions/<int:pk>/chat/', views.transaction_chat, name='transaction_chat'),
 ]

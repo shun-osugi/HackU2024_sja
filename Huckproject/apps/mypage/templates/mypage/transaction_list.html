@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>取引一覧</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>取引ID</th>
+                <th>売り手</th>
+                <th>買い手</th>
+                <th>商品</th>
+                <th>ステータス</th>
+                <th>日時</th>
+                <th>詳細</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.id }}</td>
+                <td>{{ transaction.seller.username }}</td>
+                <td>{{ transaction.buyer.username }}</td>
+                <td>{{ transaction.product.name }}</td>
+                <td>{{ transaction.status }}</td>
+                <td>
+                    {% if transaction.meeting_time %}
+                        {{ transaction.meeting_time|date:"Y-m-d H:i" }}
+                    {% else %}
+                        未設定
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'transaction_chat' transaction.id %}" class="btn btn-primary">詳細を見る</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">取引がありません。</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
