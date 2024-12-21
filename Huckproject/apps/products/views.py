@@ -15,15 +15,11 @@ logger = logging.getLogger(__name__)
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    comments = Comment.objects.filter(product=product).order_by('-created_at')
-    is_favorite = False
-    if request.user.is_authenticated:
-        is_favorite = Favorite.objects.filter(user=request.user, product=product).exists()
-    return render(request, 'products/product_detail.html', {
+
+    context = {
         'product': product,
-        'comments': comments,
-        'is_favorite': is_favorite
-    })
+    }
+    return render(request, 'products/product_detail.html', context)
 
 @login_required
 @require_POST
