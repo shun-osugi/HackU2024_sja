@@ -1,11 +1,12 @@
 from django import forms
 from .models import Listing
 from apps.products.models import UserProfile
+from apps.products.models import Product
 
 class ListingForm(forms.ModelForm):
     class Meta:
-        model = Listing
-        fields = ['product_name', 'subject', 'description', 'price', 'faculty', 'department', 'image']
+        model = Product
+        fields = ['name', 'subject', 'description', 'price', 'faculty', 'department', 'image']
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
